@@ -1,0 +1,45 @@
+###############################################################################
+# TOOLS LAYER - targetplatform
+# contains generic tools required in every docker image
+###############################################################################
+FROM ubuntu:%%UBUNTU_VERSION%% AS tools
+
+#include "include/generic.tools"
+
+###############################################################################
+# NATIVE TOOLCHAIN LAYER - multiarch
+# contains the build tools to native compile software
+###############################################################################
+FROM tools AS native
+
+#include "include/native.toolchain"
+
+###############################################################################
+# DEPENDENCIES LAYER - multiarch
+# installs the required libraries to compile specific software
+###############################################################################
+FROM native AS deps
+
+#include "include/cmake.deps"
+
+###############################################################################
+# BUILD LAYER - multiarch
+# native compiles the specific software
+###############################################################################
+FROM deps AS build
+
+#include "include/cmake.src"
+
+#include "include/cmake-native.build"
+
+###############################################################################
+# FINAL LAYER - multiarch
+# installed compiled software and any additional tools here
+###############################################################################
+FROM native AS final
+
+COPY --from=build /opt /opt
+
+#include "include/package.install"
+
+#include "include/extra.tools"

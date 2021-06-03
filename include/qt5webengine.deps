@@ -1,0 +1,28 @@
+# file: building-blocks/qt5webengine.deps
+#
+# installing dependencies to build qt5 webengine
+#
+
+# qtwebengine deps
+RUN apt-get update && \
+    apt-get install --assume-yes  \
+    bison \
+    build-essential \
+    gperf \
+    flex \
+    ruby \
+    python \
+    libasound2-dev \
+    libbz2-dev \
+    libcap-dev \
+    libcups2-dev \
+    libdrm-dev \
+    libegl1-mesa-dev \
+    libgcrypt11-dev \
+    libnss3-dev \
+    libpci-dev \
+    libpulse-dev \
+    libudev-dev \
+    libxtst-dev \
+    gyp \
+    ninja-build

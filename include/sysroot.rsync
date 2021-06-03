@@ -1,0 +1,16 @@
+# file: building-blocks/sysroot.rsync
+#
+# rsync sysroot from emulated target to current sysroot
+#
+
+ENV SYSROOT /usr/${CROSS_TRIPLE}/sysroot
+
+COPY --from=sysroot /etc /tmp/new_sysroot/etc
+COPY --from=sysroot /lib /tmp/new_sysroot/lib
+COPY --from=sysroot /sbin /tmp/new_sysroot/sbin
+COPY --from=sysroot /usr /tmp/new_sysroot/usr
+COPY --from=sysroot /var /tmp/new_sysroot/var
+
+RUN rsync -avh /tmp/new_sysroot/* ${SYSROOT}
+
+RUN rm --recursive --force /tmp/new_sysroot

@@ -1,0 +1,12 @@
+# file: building-blocks/sysroot.setup
+#
+# copy sysroot from emulated target to builder
+#
+
+ENV SYSROOT /usr/${CROSS_TRIPLE}/sysroot
+
+COPY --from=sysroot /etc ${SYSROOT}/etc
+COPY --from=sysroot /lib ${SYSROOT}/lib
+COPY --from=sysroot /sbin ${SYSROOT}/sbin
+COPY --from=sysroot /usr ${SYSROOT}/usr
+COPY --from=sysroot /var ${SYSROOT}/var

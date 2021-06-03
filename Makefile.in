@@ -1,0 +1,75 @@
+# Default target executed when no arguments are given to make.
+default_target: help
+
+.PHONY : default_target
+
+
+# Help Target
+help:
+	@echo "The following are some of the valid targets for this Makefile:"
+	@echo "... help - this message"
+	@echo "... all - build all docker images"
+	@echo "... base - native compiler [multiarch]"
+	@echo "... qt5 - native compiler with qt libraries [multiarch]"
+	@echo "... xc-base-arm64 - cross compiler targeting arm64"
+	@echo "... xc-qt5-arm64 - cross compiler targeting arm64 with qt libraries"
+	@echo "... clean - remove configured files"
+	@echo "... distclean - remove configured files and docker containers"
+
+.PHONY : help
+
+
+# All target
+all: base
+all: qt5
+all: xc-base-arm64
+all: xc-qt5-arm64
+
+.PHONY : all
+
+# This is the latest docker/binfmt build this will register with the kernel supported emulators
+# see: https://www.docker.com/blog/multi-platform-docker-builds/
+# see: https://hub.docker.com/r/docker/binfmt
+binfmt:
+	docker run --privileged --rm docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+
+.PHONY : binfmt
+
+
+base: binfmt
+	docker buildx build --tag %%DOCKER_REGISTRY%%/base --load native-compile/base/.
+
+.PHONY : base
+
+
+qt5: base
+	docker buildx build --tag %%DOCKER_REGISTRY%%/qt5 --load native-compile/qt5/.
+
+.PHONY : qt5
+
+
+xc-base-arm64: base
+	docker buildx build --tag %%DOCKER_REGISTRY%%/xc-base-arm64 --load cross-compile/aarch64-linux-gnu/xc-base/.
+
+.PHONY : xc-base-arm64
+
+
+xc-qt5-arm64: xc-base-arm64
+	docker buildx build --tag %%DOCKER_REGISTRY%%/xc-qt5-arm64 --load cross-compile/aarch64-linux-gnu/xc-qt5/.
+
+.PHONY : xc-qt5-arm64
+
+
+clean:
+	@find . -name "*.in" | sed 's|\.in||' | xargs rm --verbose --force
+
+.PHONY : clean
+
+
+distclean: clean
+	docker image rm --force %%DOCKER_REGISTRY%%/base
+	docker image rm --force %%DOCKER_REGISTRY%%/qt5
+	docker image rm --force %%DOCKER_REGISTRY%%/xc-base-arm64
+	docker image rm --force %%DOCKER_REGISTRY%%/xc-qt5-arm64
+
+.PHONY : distclean

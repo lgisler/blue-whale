@@ -1,0 +1,10 @@
+# file: building-blocks/cmake.deps
+#
+# installing dependencies to build cmake
+#
+
+RUN sed -Ei 's/^# deb-src /deb-src /g' /etc/apt/sources.list && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get --assume-yes build-dep cmake && \
+    apt-get --assume-yes install libssl-dev && \
+    apt-get clean --yes

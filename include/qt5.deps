@@ -1,0 +1,36 @@
+# file: building-blocks/qt5.deps
+#
+# installing dependencies to build qt5
+#
+
+# qt docs: requirements for development host
+RUN apt-get update && \
+    apt-get install --assume-yes \
+    build-essential \
+    libgl1-mesa-dev && \
+    apt-get clean --yes
+
+# qt docs: qt for x11 requirements
+RUN apt-get update && \
+    apt-get install --assume-yes \
+    libxrender-dev \
+    '^libxcb.*-dev' \
+    libxkbcommon-dev \
+    libxkbcommon-x11-dev \
+    libfontconfig-dev \
+    libfreetype6-dev \
+    libxext-dev \
+    libx11-dev \
+    libx11-xcb-dev \
+    libsm-dev \
+    libice-dev \
+    glib2.0-dev \
+    libpthread-stubs0-dev \
+    libxfixes-dev \
+    libxi-dev && \
+    apt-get clean --yes
+
+# build-deps for qt
+RUN sed -Ei 's/^# deb-src /deb-src /g' /etc/apt/sources.list && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get --assume-yes build-dep qtdeclarative5-dev qt5-default

@@ -1,0 +1,43 @@
+###############################################################################
+# BASE LAYER - multiarch
+# built on top of base layer
+###############################################################################
+FROM %%DOCKER_BASE_NAME%% AS base
+
+###############################################################################
+# DEPENDENCIES LAYER - multiarch
+# installs the required libraries to compile specific software
+###############################################################################
+FROM base AS deps
+
+#include "include/qt5.deps"
+
+#include "include/qt5webengine.deps"
+
+###############################################################################
+# BUILD LAYER - multiarch
+# native compiles the specific software
+###############################################################################
+FROM deps AS build
+
+#include "include/qt5.src"
+
+#include "include/qt5-native.build"
+
+#include "include/qt5webengine-native.build"
+
+###############################################################################
+# FINAL LAYER - multiarch
+# installed compiled software and any additional tools here
+###############################################################################
+FROM base AS final
+
+COPY --from=build /opt /opt
+
+#include "include/package.install"
+
+#include "include/qt5.runtime"
+
+ENV PATH="/usr/local/Qt-%%QT_VERSION%%/bin:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/Qt-%%QT_VERSION%%/lib:${LD_LIBRARY_PATH}"
+ENV CMAKE_PREFIX_PATH="/usr/local/Qt-%%QT_VERSION%%:${CMAKE_PREFIX_PATH}"

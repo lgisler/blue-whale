@@ -1,0 +1,17 @@
+# file: building-blocks/cmake-native.build
+#
+# cross compile cmake
+#
+
+RUN mkdir /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    cd /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    ../bootstrap -- \
+        -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE} \
+        -DCPACK_GENERATOR=DEB \
+        -DCPACK_DEBIAN_PACKAGE_ARCHITECTURE=${ARCH} \
+        -DCPACK_DEBIAN_PACKAGE_DEPENDS="libssl1.1"
+
+RUN cd /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    make package
+
+RUN mv /tmp/cmake-%%CMAKE_VERSION%%/build/cmake*.deb /opt/cmake-%%CMAKE_VERSION%%_${ARCH}.deb

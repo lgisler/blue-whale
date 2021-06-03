@@ -1,0 +1,10 @@
+{
+    "properties" : {
+        "UBUNTU_VERSION" : "18.04",
+        "GCC_VERSION" : "8",
+        "CMAKE_VERSION" : "3.19.5",
+        "QT_VERSION" : "5.15.2",
+        "QT_VERSION_MINOR" : "5.15",
+        "DOCKER_REGISTRY" : "blue-whale"
+    }
+}

@@ -1,0 +1,46 @@
+# file: building-blocks/aarch64-linux-gnu.toolchain
+#
+# installing cross compile gnu c/c++ toolchain for target aarch64-linux-gnu
+#
+
+ENV CROSS_TRIPLE aarch64-linux-gnu
+ENV ARCH arm64
+
+# cross toolchain
+RUN apt-get update && \
+    apt-get install --assume-yes \
+    crossbuild-essential-${ARCH} \
+    g++-%%GCC_VERSION%%-${CROSS_TRIPLE} && \
+    apt-get clean --yes
+
+# update system cross toolchain gcc / g++
+RUN update-alternatives --install /usr/bin/${CROSS_TRIPLE}-gcc ${CROSS_TRIPLE}-gcc /usr/bin/${CROSS_TRIPLE}-gcc-%%GCC_VERSION%% 10 && \
+    update-alternatives --install /usr/bin/${CROSS_TRIPLE}-g++ ${CROSS_TRIPLE}-g++ /usr/bin/${CROSS_TRIPLE}-g++-%%GCC_VERSION%% 10 && \
+    update-alternatives --install /usr/bin/${CROSS_TRIPLE}-g++ ${CROSS_TRIPLE}-g++ /usr/bin/${CROSS_TRIPLE}-cpp-%%GCC_VERSION%% 10
+
+# cross-compiling emulator
+RUN apt-get update && \
+    apt-get install --assume-yes \
+    qemu-user \
+    qemu-user-static && \
+    apt-get clean --yes
+
+# environment variables
+ENV AS=/usr/bin/${CROSS_TRIPLE}-as \
+    AR=/usr/bin/${CROSS_TRIPLE}-ar \
+    CC=/usr/bin/${CROSS_TRIPLE}-gcc \
+    CPP=/usr/bin/${CROSS_TRIPLE}-cpp \
+    CXX=/usr/bin/${CROSS_TRIPLE}-g++ \
+    LD=/usr/bin/${CROSS_TRIPLE}-ld
+
+ENV QEMU_LD_PREFIX "/usr/${CROSS_TRIPLE}/sysroot"
+ENV QEMU_SET_ENV "LD_LIBRARY_PATH=/usr/${CROSS_TRIPLE}/lib:${QEMU_LD_PREFIX}"
+ENV PKG_CONFIG_PATH /usr/lib/${CROSS_TRIPLE}/pkgconfig
+COPY Toolchain.cmake /usr/${CROSS_TRIPLE}/Toolchain.cmake
+ENV CMAKE_TOOLCHAIN_FILE /usr/${CROSS_TRIPLE}/Toolchain.cmake
+
+# linux kernel cross compilation variables
+ENV PATH ${PATH}:/usr/${CROSS_TRIPLE}/bin
+ENV CROSS_COMPILE ${CROSS_TRIPLE}-
+
+ENV SYSROOT /usr/${CROSS_TRIPLE}/sysroot

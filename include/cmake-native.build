@@ -1,0 +1,15 @@
+# file: building-blocks/cmake-native.build
+#
+# native compile cmake
+#
+
+RUN mkdir /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    cd /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    ../bootstrap -- \
+        -DCPACK_GENERATOR=DEB \
+        -DCPACK_DEBIAN_PACKAGE_DEPENDS="libssl1.1"
+
+RUN cd /tmp/cmake-%%CMAKE_VERSION%%/build && \
+    make package
+
+RUN mv /tmp/cmake-%%CMAKE_VERSION%%/build/cmake*.deb /opt/cmake-%%CMAKE_VERSION%%_$(dpkg --print-architecture).deb

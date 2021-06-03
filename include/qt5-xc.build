@@ -1,0 +1,36 @@
+# file: building-blocks/qt5-xc.build
+#
+# cross compile qt5
+#
+
+# configure step
+RUN mkdir /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    /tmp/qt-everywhere-src-%%QT_VERSION%%/configure \
+    -opensource \
+    -confirm-license \
+    -xplatform ${XPLATFORM} \
+    -device-option CROSS_COMPILE=${CROSS_COMPILE} \
+    -sysroot ${SYSROOT} \
+    -prefix /usr/local/Qt-%%QT_VERSION%% \
+    -extprefix /usr/local/Qt-%%QT_VERSION%% \
+    -prefix /usr/local/Qt-%%QT_VERSION%% \
+    -nomake tests \
+    -nomake examples \
+    -no-warnings-are-errors \
+    -xcb \
+    -xcb-xlib \
+    -skip qtwebengine # build seperately if required
+
+# make step
+RUN cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    make
+
+# install step
+RUN cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    checkinstall --install=no \
+                 --default \
+                 --pkgname "qt-everywhere" \
+                 --pkgarch "${ARCH}" \
+                 --pkgversion=%%QT_VERSION%% && \
+    mv *.deb /opt

@@ -1,0 +1,8 @@
+# file: building-blocks/cmake.src
+#
+# cmake source code
+#
+
+RUN cd /tmp && \
+    wget https://github.com/Kitware/CMake/releases/download/v%%CMAKE_VERSION%%/cmake-%%CMAKE_VERSION%%.tar.gz && \
+    tar xf cmake-%%CMAKE_VERSION%%.tar.gz

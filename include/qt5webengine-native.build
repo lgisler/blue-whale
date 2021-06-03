@@ -1,0 +1,14 @@
+# file: building-blocks/qt5webengine-native.build
+#
+# native compile qt5webengine
+#
+
+# build qtwebengine
+RUN cd /tmp/qt-everywhere-src-%%QT_VERSION%%/qtwebengine && \
+    qmake && \
+    make && \
+    checkinstall --install=no \
+                 --default \
+                 --pkgname "qtwebengine" \
+                 --pkgversion=%%QT_VERSION%% && \
+    mv *.deb /opt

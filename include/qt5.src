@@ -1,0 +1,10 @@
+# file: building-blocks/qt5.src
+#
+# qt5 source code
+#
+
+RUN cd /tmp/ && \
+    wget https://download.qt.io/archive/qt/%%QT_VERSION_MINOR%%/%%QT_VERSION%%/single/qt-everywhere-src-%%QT_VERSION%%.tar.xz && \
+    wget https://download.qt.io/archive/qt/%%QT_VERSION_MINOR%%/%%QT_VERSION%%/single/md5sums.txt && \
+    md5sum -c md5sums.txt --ignore-missing && \
+    tar xf qt-everywhere-src-%%QT_VERSION%%.tar.xz

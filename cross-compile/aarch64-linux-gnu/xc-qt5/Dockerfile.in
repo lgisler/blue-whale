@@ -1,0 +1,51 @@
+###############################################################################
+# USAGE SYSROOT LAYER - target:arm64
+# installs the required libraries to use specific software
+###############################################################################
+FROM --platform=linux/arm64 ubuntu:%%UBUNTU_VERSION%% AS sysroot
+
+#include "include/qt5.runtime"
+
+###############################################################################
+# CROSS ARM64 TOOLCHAIN LAYER - buildplatform
+# contains the cross compile toolchain for target:arm64
+###############################################################################
+FROM --platform=$BUILDPLATFORM %%DOCKER_BASE_NAME%%-xc-arm64 AS cross
+
+#include "include/sysroot.rsync"
+
+###############################################################################
+# BUILD SYSROOT LAYER - target:arm64
+# installs the required libraries to compile specific software
+###############################################################################
+FROM sysroot
+
+#include "include/qt5.deps"
+
+#include "include/qt5webengine.deps"
+
+###############################################################################
+# CROSS BUILD LAYER - buildplatform
+# cross compiles the specific software for target:arm64
+###############################################################################
+FROM cross AS build
+
+#include "include/sysroot.rsync"
+
+FROM cross AS build
+
+#include "include/qt5.src"
+
+ENV XPLATFORM linux-aarch64-gnu-g++
+
+#include "include/qt5-xc.build"
+
+# TODO add webengine support  #include "include/qt5webengine-xc.build"
+
+###############################################################################
+# FINAL LAYER - buildplatform
+# installed compiled software and any additional tools here
+###############################################################################
+FROM cross AS final
+
+COPY --from=build /opt /opt

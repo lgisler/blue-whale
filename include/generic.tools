@@ -1,0 +1,12 @@
+# file: building-blocks/generic.tools
+#
+# generic tools used for development
+#
+
+RUN apt-get update && \
+    apt-get --assume-yes install \
+    git \
+    wget \
+    checkinstall \
+    rsync && \
+    apt-get clean --yes

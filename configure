@@ -1,0 +1,37 @@
+#!/bin/bash
+
+if ! command -v jq &> /dev/null
+then
+    echo " --- [ERROR] jq is not installed aborting."
+    echo " --- Please install jq or run the following commands."
+    echo "  docker build -t jq tools/jq"
+    echo '  docker run --rm -v $PWD:$PWD -w $PWD jq ./configure'
+    exit 1
+fi
+
+render() {
+
+    pairs=$(jq --compact-output '.properties | to_entries[]' config.json)
+
+    for pair in ${pairs}
+    do
+        key=$(echo $pair | jq --raw-output '.key')
+        value=$(echo $pair | jq --raw-output '.value')
+        args+="s!%%$key%%!$value!g;"
+    done
+
+    # #include file preprocessor
+    sed --regexp-extended 's!^#include \"(.*)\"!cat \1!e' $1 | \
+
+    # json find and replace preprocessor
+    sed --regexp-extended "$args"
+
+    echo "Configured file from $1" >&2
+}
+
+# Render the template files into final versions
+render Makefile.in > Makefile
+render native-compile/base/Dockerfile.in > native-compile/base/Dockerfile
+render native-compile/qt5/Dockerfile.in > native-compile/qt5/Dockerfile
+render cross-compile/aarch64-linux-gnu/xc-base/Dockerfile.in > cross-compile/aarch64-linux-gnu/xc-base/Dockerfile
+render cross-compile/aarch64-linux-gnu/xc-qt5/Dockerfile.in > cross-compile/aarch64-linux-gnu/xc-qt5/Dockerfile

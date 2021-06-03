@@ -1,0 +1,15 @@
+###############################################################################
+# SYSROOT LAYER - linux/arm64
+# contains ubuntu system to use as sysroot
+###############################################################################
+FROM --platform=linux/arm64 ubuntu:%%UBUNTU_VERSION%% AS sysroot
+
+###############################################################################
+# CROSS ARM64 TOOLCHAIN LAYER - buildplatform
+# contains the build tools to cross compile software for target:arm64
+###############################################################################
+FROM --platform=$BUILDPLATFORM %%DOCKER_REGISTRY%%/base AS cross
+
+#include "include/sysroot.setup"
+
+#include "include/aarch64-linux-gnu.toolchain"

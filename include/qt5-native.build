@@ -1,0 +1,29 @@
+# file: building-blocks/qt5-native.build
+#
+# native compile qt5
+#
+
+# configure step
+RUN mkdir /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    /tmp/qt-everywhere-src-%%QT_VERSION%%/configure \
+    -opensource \
+    -confirm-license \
+    -nomake tests \
+    -nomake examples \
+    -no-warnings-are-errors \
+    -skip qtwebengine
+
+# make step
+RUN cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    make
+
+# install step
+RUN cd /tmp/qt-everywhere-build-%%QT_VERSION%% && \
+    checkinstall --install=yes \
+                 --default \
+                 --pkgname "qt-everywhere" \
+                 --pkgversion=%%QT_VERSION%% && \
+    mv *.deb /opt
+
+ENV PATH="/usr/local/Qt-%%QT_VERSION%%/bin:${PATH}"

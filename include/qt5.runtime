@@ -1,0 +1,15 @@
+# file: building-blocks/qt5.runtime
+#
+# runtime dependencies for qt5
+#
+
+RUN apt-get update && \
+    apt-get install --assume-yes \
+    mesa-common-dev \
+    libdouble-conversion-dev \
+    libgl1-mesa-glx \
+    libpulse0 \
+    libegl1-mesa \
+    libgstreamer-plugins-base1.0-0 \
+    libasound2 && \
+    apt-get clean --yes

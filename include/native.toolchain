@@ -1,0 +1,17 @@
+# file: building-blocks/native.toolchain
+#
+# installing native gnu c/c++ toolchain
+#
+
+RUN apt-get update && \
+    apt-get --assume-yes install \
+    build-essential \
+    gcc-%%GCC_VERSION%% \
+    g++-%%GCC_VERSION%% && \
+    apt-get clean --yes
+
+# update system gcc / g++
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-%%GCC_VERSION%% 10 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-%%GCC_VERSION%% 10 && \
+    update-alternatives --set cc /usr/bin/gcc && \
+    update-alternatives --set c++ /usr/bin/g++
