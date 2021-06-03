@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 env:
-  IMAGE: ghcr.io/lgisler/blue-whale/base
+  BASE: ghcr.io/lgisler/blue-whale/base
+  XCBASE: ghcr.io/lgisler/blue-whale/xc-base-arm64
 
 jobs:
 
@@ -31,7 +32,16 @@ jobs:
       run: |
         docker buildx create --use
         docker buildx build \
-          --output type=image,name=$IMAGE,push=true \
-          --cache-to type=registry,ref=$IMAGE:buildcache,push=true \
-          --cache-from type=registry,ref=$IMAGE:buildcache \
+          --output type=image,name=$BASE,push=true \
+          --cache-to type=registry,ref=$BASE:buildcache,push=true \
+          --cache-from type=registry,ref=$BASE:buildcache \
           native-compile/base/.
+
+    - name: Build cross compile base image
+      run: |
+        docker buildx create --use
+        docker buildx build \
+          --output type=image,name=$XCBASE,push=true \
+          --cache-to type=registry,ref=$XCBASE:buildcache,push=true \
+          --cache-from type=registry,ref=$XCBASE:buildcache \
+          cross-compile/aarch64-linux-gnu/xc-base/.

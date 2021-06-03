@@ -5,6 +5,6 @@
         "CMAKE_VERSION" : "3.19.5",
         "QT_VERSION" : "5.15.2",
         "QT_VERSION_MINOR" : "5.15",
-        "DOCKER_REGISTRY" : "blue-whale"
+        "DOCKER_REGISTRY" : "ghcr.io/lgisler/blue-whale"
     }
 }
