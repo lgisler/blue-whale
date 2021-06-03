@@ -1,10 +1,13 @@
-name: Docker Image CI
+name: Docker Base Image CI
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+env:
+  IMAGE: ghcr.io/lgisler/blue-whale/base
 
 jobs:
 
@@ -14,7 +17,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build the base image
+
+    - name: Log into docker registry
+      run: echo "${{ secrets.DOCKER_TOKEN  }}" | docker login ghcr.io/lgisler -u "${{ secrets.DOCKER_USER  }}" --password-stdin
+
+    - name: Configure files
+      run: ./configure
+
+    - name: Run binfmt image
+      run: docker run --privileged --rm docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+
+    - name: Build base image
       run: |
-        ./configure
-        make base
+        docker buildx create --use
+        docker buildx build \
+          --output type=image,name=$IMAGE,push=true \
+          --cache-to type=registry,ref=$IMAGE:buildcache,push=true \
+          --cache-from type=registry,ref=$IMAGE:buildcache \
+          native-compile/base/.
