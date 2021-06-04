@@ -1,5 +1,5 @@
 ###############################################################################
-# TOOLS LAYER - targetplatform
+# TOOLS LAYER - multiarch
 # contains generic tools required in every docker image
 ###############################################################################
 FROM ubuntu:%%UBUNTU_VERSION%% AS tools
