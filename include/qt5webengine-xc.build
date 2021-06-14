@@ -1,4 +1,4 @@
-# file: building-blocks/qt5webengine-xc.build
+# file: include/qt5webengine-xc.build
 #
 # cross compile qt5webengine
 #

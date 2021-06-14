@@ -1,4 +1,4 @@
-# file: building-blocks/sysroot.rsync
+# file: include/sysroot.rsync
 #
 # rsync sysroot from emulated target to current sysroot
 #

@@ -1,4 +1,4 @@
-# file: building-blocks/qt5webengine-native.build
+# file: include/qt5webengine-native.build
 #
 # native compile qt5webengine
 #

@@ -1,4 +1,4 @@
-# file: building-blocks/qt5-xc.build
+# file: include/qt5-xc.build
 #
 # cross compile qt5
 #

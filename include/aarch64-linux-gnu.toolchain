@@ -1,4 +1,4 @@
-# file: building-blocks/aarch64-linux-gnu.toolchain
+# file: include/aarch64-linux-gnu.toolchain
 #
 # installing cross compile gnu c/c++ toolchain for target aarch64-linux-gnu
 #

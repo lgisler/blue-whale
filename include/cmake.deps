@@ -1,4 +1,4 @@
-# file: building-blocks/cmake.deps
+# file: include/cmake.deps
 #
 # installing dependencies to build cmake
 #

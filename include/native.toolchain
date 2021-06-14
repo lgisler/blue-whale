@@ -1,4 +1,4 @@
-# file: building-blocks/native.toolchain
+# file: include/native.toolchain
 #
 # installing native gnu c/c++ toolchain
 #

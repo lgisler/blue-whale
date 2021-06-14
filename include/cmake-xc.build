@@ -1,4 +1,4 @@
-# file: building-blocks/cmake-native.build
+# file: include/cmake-native.build
 #
 # cross compile cmake
 #
