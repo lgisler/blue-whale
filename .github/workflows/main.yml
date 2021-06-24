@@ -1,4 +1,4 @@
-name: Docker Base Image CI
+name: ci
 
 on:
   push:
@@ -19,8 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Configure files
-      run: ./configure
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -31,6 +31,9 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Configure Dockerfiles
+      run: ./configure
 
     - name: Build base image and push
       uses: docker/build-push-action@v2
